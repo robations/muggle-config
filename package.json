@@ -1,0 +1,15 @@
+{
+  "name": "muggle-config",
+  "version": "0.0.0",
+  "description": "Configuration without the magic.",
+  "main": "dist/index.js",
+  "author": "me",
+  "license": "MIT",
+  "dependencies": {
+    "immutable": "^3.8.1",
+    "js-yaml": "^3.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^6.0.52"
+  }
+}
