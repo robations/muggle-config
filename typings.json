@@ -1,6 +1,4 @@
 {
   "name": "muggle-config",
-  "dependencies": {
-    "js-yaml": "registry:dt/js-yaml#3.5.2+20161220142525"
-  }
+  "dependencies": {}
 }
