@@ -2,6 +2,8 @@
 
 Configuration without the magic.
 
+[![NPM](https://nodei.co/npm/muggle-config.png?downloads=true)](https://nodei.co/npm/muggle-config/)
+
 
 ## Why
 
@@ -86,6 +88,7 @@ const myConfig = load("graham.ini", iniLoader);
 - [x] file extension loader (load files based on extension)
 - [x] document basic usage
 - [x] add some unit tests
+- [x] ensure minimal npm publish (don't include bloat files)
 - [ ] blanket test coverage
 - [ ] make sure all globals/environment is a parameter or optional parameter (such as `process.cwd()`)
 - [ ] function that emulates node-config module more closely with `NODE_ENV` file loading

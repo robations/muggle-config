@@ -18,6 +18,7 @@
     "jasmine-core": "^2.5.2"
   },
   "scripts": {
-    "test": "test.js"
+    "prepare": "tsc",
+    "test": "node test.js"
   }
 }
