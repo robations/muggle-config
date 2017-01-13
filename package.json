@@ -5,6 +5,13 @@
   "main": "dist/index.js",
   "author": "me",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robations/muggle-config.git"
+  },
+  "bugs": {
+    "url": "https://github.com/robations/muggle-config/issues"
+  },
   "dependencies": {
     "immutable": "^3.8.1",
     "js-yaml": "^3.7.0"
