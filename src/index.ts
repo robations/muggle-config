@@ -102,7 +102,7 @@ export function jsLoader(resource: string, context?: string) {
 }
 
 /**
- * This loaded expects the whole resource string to be a valid JSON string that is the configuration.
+ * This loader expects the whole resource string to be a valid JSON string that is the configuration.
  */
 export function testLoader(resource: {}): Loaded<{}, {}> {
     return {

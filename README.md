@@ -4,6 +4,8 @@ Configuration without the magic.
 
 [![NPM](https://nodei.co/npm/muggle-config.png?downloads=true)](https://nodei.co/npm/muggle-config/)
 
+[![Build Status](https://travis-ci.org/robations/muggle-config.svg?branch=master)](https://travis-ci.org/robations/muggle-config)
+
 
 ## Why
 
@@ -82,6 +84,20 @@ function iniLoader(resource: string, context?: string) {
 const myConfig = load("graham.ini", iniLoader);
 ```
 
+# Who
+
+Contribute by trying out this module and reporting back any usability problems, questions or bugs on [the issue
+tracker]([![Build
+Status](https://travis-ci.org/robations/muggle-config.svg?branch=master)](https://travis-ci.org/robations/muggle-config)).
+Pull requests are welcome but please check before doing work to avoid disappointment.
+
+
+# When
+
+If you are interested to use the package but are put off by the *unstable* status, I aim to speed this module to a
+stable v1 status over the next few months, preferably before Summer 2017. Any contributions, stress testing and
+additional feedback will help.
+
 
 ## TODO
 
@@ -89,6 +105,9 @@ const myConfig = load("graham.ini", iniLoader);
 - [x] document basic usage
 - [x] add some unit tests
 - [x] ensure minimal npm publish (don't include bloat files)
+- [x] set up continuous integration
+- [ ] clearer documentation of common use cases
+- [ ] developer documentation
 - [ ] blanket test coverage
 - [ ] make sure all globals/environment is a parameter or optional parameter (such as `process.cwd()`)
 - [ ] function that emulates node-config module more closely with `NODE_ENV` file loading
