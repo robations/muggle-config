@@ -27,5 +27,6 @@
   "scripts": {
     "prepublish": "tsc",
     "test": "node test.js"
-  }
+  },
+  "types": "./dist/index.d.ts"
 }

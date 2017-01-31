@@ -107,6 +107,7 @@ additional feedback will help.
 - [x] ensure minimal npm publish (don't include bloat files)
 - [x] set up continuous integration
 - [ ] clearer documentation of common use cases
+- [ ] add a changelog
 - [ ] developer documentation
 - [ ] blanket test coverage
 - [ ] make sure all globals/environment is a parameter or optional parameter (such as `process.cwd()`)
