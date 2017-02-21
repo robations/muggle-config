@@ -66,3 +66,24 @@ The `_imports` key in the YAML files above indicates configurations that must be
 resolved. With a custom loader you could load from any source, although note that we are currently limited to
 synchronous operations.
 
+---
+
+**Intent:** I want to avoid re-evaluating configuration files and consolidate config logic in my project
+
+```ecmascript6
+// config.js
+import {loadEnv} from "muggle-config";
+
+// any more complicated configuration logic could go in here such as validation or setting defaults
+export const config = loadEnv();
+
+
+// another.js
+import {config} from "./config";
+
+console.log(config.get("foo"));
+```
+
+Create a module within your project, say `config.js`, which evaluates and exports your configuration for use elsewhere.
+Since NodeJS/CommonJS only evaluates a module once you can be sure you‘ll get the same configuration each time,
+and the ImmutableJS data structure ensures that nothing can change the configuration during runtime.

@@ -44,6 +44,9 @@ export function loadEnv(env?: string, loader: Loader<string, string> = extension
     if (env === void 0) {
         env = process.env.NODE_ENV;
     }
+    if (env === void 0) {
+        throw new Error("NODE_ENV variable must be set when using loadEnv()");
+    }
     let configDir = join(process.cwd(), "config");
     if (configDir.indexOf('.') === 0) {
         configDir = join(process.cwd(), configDir);
