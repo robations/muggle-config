@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
+    "incremental": true,
     "outDir": "./dist/",
     "sourceMap": true,
     "noImplicitAny": true,
     "module": "commonjs",
     "declaration": true,
-    "target": "es5"
+    "target": "es5",
+    "skipLibCheck": true
   },
   "include": [
-    "./src/**/*",
-    "./typings/index.d.ts"
+    "./src/**/*"
   ]
 }

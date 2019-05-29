@@ -1,9 +1,18 @@
 import * as yaml from "js-yaml";
 import * as fs from "fs";
-import * as im from "immutable";
 import {dirname, resolve} from "path";
 import {extname} from "path";
 import {join} from "path";
+import {
+    has,
+    mergeDeepLeft,
+    mergeDeepRight,
+    merge,
+    pipe,
+    prop,
+    reduce,
+} from "ramda";
+import {applyParameters} from "./parameters";
 
 export interface Loaded<R, C> {
     data: {};
@@ -19,46 +28,87 @@ export interface Loader<R, C> {
 
 export function genericLoad<R, C>(resource: R, loader: Loader<R, C>, context?: C): any {
     const {data, resolved} = loader(resource, context);
-    const doc = im.fromJS(data);
 
-    if (doc.has("_imports")) {
-        return doc
-            .get("_imports")
-            .reduceRight(
+    if (has("_imports", data)) {
+        return pipe(
+            prop("_imports"),
+            reduce(
                 (agg: any, x: R) => {
                     const base = genericLoad<R, C>(x, loader, resolved);
-                    return base.mergeDeep(agg);
+                    return mergeDeepRight(agg, base);
                 },
-                doc
-            )
-        ;
+                {},
+            ),
+            mergeDeepLeft(data),
+        )(data);
     }
-    return doc;
+    return data;
 }
 
-export function load(resource: string, loader: Loader<string, string> = extensionLoader, context?: string): any {
+export function load<C extends {}>(
+    resource: string,
+    loader: Loader<string, string> = extensionLoader,
+    context?: string,
+): C {
     return genericLoad<string, string>(resource, loader, context);
 }
 
-export function loadEnv(env?: string, loader: Loader<string, string> = extensionLoader, context?: string): any {
-    if (env === void 0) {
+/**
+ * Load config from the specified resource and apply the passed environment
+ * variables.
+ *
+ * The order of applying parameters is (i) from a `parameters` key within the
+ * config, then (ii) from the passed `env` record.
+ *
+ * For example, you might call it like this:
+ *
+ * ```
+ * const config = loadWithParameters("config/myconfig.yaml", process.env);
+ * ```
+ *
+ * @param resource
+ * @param loader
+ * @param env
+ * @param context
+ */
+export function loadWithParameters<C extends {}>(
+    resource: string,
+    env: Record<any, string>,
+    loader: Loader<string, string> = extensionLoader,
+    context?: string,
+): C {
+    const config = genericLoad<string, string>(resource, loader, context);
+    const params = merge(config.parameters, env);
+
+    return applyParameters(config, params);
+}
+
+/**
+ * Load config for a specific environment
+ *
+ * @param env The environment to load. Will fall back to the NODE_ENV environment variable.
+ * @param loader Loads a resource.
+ * @param context A context for loading resources such as current working directory
+ */
+export function loadEnv<C extends {}>(env?: string, loader: Loader<string, string> = extensionLoader, context?: string): C {
+    if (env === undefined) {
         env = process.env.NODE_ENV;
     }
-    if (env === void 0) {
-        throw new Error("NODE_ENV variable must be set when using loadEnv()");
+    if (env === undefined) {
+        throw new Error("NODE_ENV variable must be set when using loadEnv() or specify environment explicitly");
     }
     let configDir = join(process.cwd(), "config");
-    if (configDir.indexOf('.') === 0) {
+    if (configDir.indexOf(".") === 0) {
         configDir = join(process.cwd(), configDir);
     }
-    const extensions = im.List(["js", "json", "yaml", "yml"]);
+    const extensions = ["js", "json", "yaml", "yml"];
 
     const found = extensions
         .map((x: string) => join(configDir, env) + "." + x)
         .find((x: string) => fs.existsSync(x))
     ;
 
-    if (found === void 0) {
+    if (found === undefined) {
         throw new Error(`No matching configurations found for environment ${env}`);
     }
 
@@ -88,7 +138,7 @@ export function yamlLoader(resource: string, context?: string) {
 
     return {
         data: yaml.safeLoad(fs.readFileSync(resolved, "utf8")),
-        resolved: resolved
+        resolved: resolved,
     };
 }
 
@@ -100,16 +150,16 @@ export function jsLoader(resource: string, context?: string) {
 
     return {
         data: require(resolved),
-        resolved: resolved
+        resolved: resolved,
     };
 }
 
 /**
- * This loader expects the whole resource string to be a valid JSON string that is the configuration.
+ * This loader expects the whole resource string to be a valid JS object that is the configuration.
  */
 export function testLoader(resource: {}): Loaded<{}, {}> {
     return {
         data: resource,
-        resolved: resource
+        resolved: resource,
     };
 }

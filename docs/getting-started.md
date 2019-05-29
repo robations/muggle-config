@@ -16,7 +16,7 @@ foo: bar
 import {load} from "muggle-config";
 
 const myConfig = load("./data.yaml");
-const someValue = myConfig.get("foo"); // "bar"
+const someValue = myConfig.foo; // "bar"
 ```
 
 The returned configuration object is an instance of an [Immutable](https://facebook.github.io/immutable-js/) Map which
@@ -45,7 +45,7 @@ foo: i'm in development!
 import {loadEnv} from "muggle-config";
 
 const myConfig = loadEnv();
-const someValue = myConfig.get("foo");
+const someValue = myConfig.foo;
 
 console.log(someValue);
 ```
@@ -81,7 +81,7 @@ export const config = loadEnv();
 // another.js
 import {config} from "./config";
 
-console.log(config.get("foo"));
+console.log(config.foo);
 ```
 
 Create a module within your project, say `config.js`, which evaluates and exports your configuration for use elsewhere.

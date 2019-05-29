@@ -29,7 +29,7 @@ $ npm i muggle-config
 import {load} from "muggle-config";
 
 const myConfig = load("./config/wayne.yaml");
-const someValue = myConfig.get("foo"); // "bar"
+const someValue = myConfig.foo; // "bar"
 ```
 
 ```yaml

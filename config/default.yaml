@@ -1,0 +1,7 @@
+database: "mysql://%USER%:%PASS%@%HOST%:%PORT%"
+
+parameters:
+    USER: ~
+    PASS: ~
+    HOST: ~
+    PORT: ~

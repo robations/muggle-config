@@ -1,7 +1,6 @@
 import * as index from "../index";
-import {testLoader} from "../index";
+import {loadWithParameters, testLoader} from "../index";
 import {loadEnv} from "../index";
-import {Loader} from "../index";
 
 describe("entry point", function () {
     it("should have the expected exports", function () {
@@ -18,8 +17,15 @@ describe("entry point", function () {
         const config = {
             _imports: [
                 {
-                    someParameter: "someValue"
-                }
+                    _imports: [
+                        {
+                            additionalParameter: [99],
+                            heavySurf: "this should be loaded",
+                            someParameter: "never see the light of day",
+                        },
+                    ],
+                    someParameter: "someValue",
+                },
             ],
             someParameter: "overriding value",
             additionalParameter: [1, 2, 3]
@@ -27,8 +33,9 @@ describe("entry point", function () {
 
         const result = index.genericLoad(config, testLoader);
 
-        expect(result.get("someParameter")).toEqual("overriding value");
-        expect(result.get("additionalParameter").toArray()).toEqual([1, 2, 3]);
+        expect(result.someParameter).toEqual("overriding value");
+        expect(result.additionalParameter).toEqual([1, 2, 3]);
+        expect(result.heavySurf).toEqual("this should be loaded");
     });
 
     it("should handle overriding values so that the last value wins", function () {
@@ -42,8 +49,8 @@ describe("entry point", function () {
 
         const result = index.genericLoad(config, testLoader);
 
-        expect(result.get("key")).toEqual("three");
-        expect(result.get("key2")).toEqual("bee");
+        expect(result.key).toEqual("three");
+        expect(result.key2).toEqual("bee");
     });
 });
 
@@ -65,4 +72,45 @@ describe("loadEnv()", function () {
             .toThrowError("No matching configurations found for environment boobs")
         ;
     });
+});
+
+test("loadWithParameters() should apply parameters from the environment", () => {
+    const res: any = loadWithParameters(
+        "example.yaml",
+        {
+            USER: "user",
+            PASS: "pass",
+            HOST: "host",
+            PORT: "port",
+        },
+        () => ({
+            data: {database: "mysql://%USER%:%PASS%@%HOST%:%PORT%"},
+            resolved: "example.yaml",
+        }),
+    );
+
+    expect(res.database).toEqual("mysql://user:pass@host:port");
+});
+
+test("loadWithParameters() should apply parameters from the config and environment", () => {
+    const res: any = loadWithParameters(
+        "example.yaml",
+        {
+            PORT: "3306"
+        },
+        () => ({
+            data: {
+                database: "mysql://%USER%:%PASS%@%HOST%:%PORT%",
+                parameters: {
+                    USER: "user",
+                    PASS: "pass",
+                    HOST: "host",
+                    PORT: "port",
+                },
+            },
+            resolved: "example.yaml",
+        }),
+    );
+
+    expect(res.database).toEqual("mysql://user:pass@host:3306");
 });
