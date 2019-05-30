@@ -37,9 +37,6 @@ const someValue = myConfig.foo; // "bar"
 foo: bar
 ```
 
-The returned configuration object is an instance of [Immutable](https://facebook.github.io/immutable-js/) which provides
-a flexible interface for querying objects and object paths.
-
 You can explicitly create multiple configuration hierarchies:
 
 ```yaml
@@ -59,7 +56,7 @@ You can also create your own configuration loader that must match the `Loader` i
 ini files:
 
 ```typescript
-import * as fs from "fs";
+import {readFileSync} from "fs";
 import * as ini from "ini";
 import {resolve, dirname} from "path";
 import {load} from "muggle-config";
@@ -74,7 +71,7 @@ function iniLoader(resource: string, context?: string) {
 
     return {
         // The actual data as a JS object/array.
-        data: ini.parse(fs.readFileSync(resolved, "utf-8")),
+        data: ini.parse(readFileSync(resolved, "utf-8")),
 
         // The resolved path (allows resolution of recursive configs).
         resolved: resolved
@@ -92,11 +89,16 @@ Status](https://travis-ci.org/robations/muggle-config.svg?branch=master)](https:
 Pull requests are welcome but please check before doing work to avoid disappointment.
 
 
-# When
+# Upgrading from v0.0.x to v1
 
-If you are interested to use the package but are put off by the *unstable* status, I aim to speed this module to a
-stable v1 status over the next few months, preferably before Summer 2017. Any contributions, stress testing and
-additional feedback will help.
+1. Returned configuration no longer uses the ImmutableJS library and will be
+Plain Old Javascript Objects.
+
+2. Consider migrating away from using `loadEnv()` in preference to `load()` or
+`loadWithParameters()`.
+
+3. `muggle-config` now has a dependency on some `ramda` functions. Make sure
+that tree-shaking is working if using in the browser.
 
 
 ## TODO
@@ -106,12 +108,10 @@ additional feedback will help.
 - [x] add some unit tests
 - [x] ensure minimal npm publish (don't include bloat files)
 - [x] set up continuous integration
-- [ ] clearer documentation of common use cases
+- [x] clearer documentation of common use cases
+- [x] developer documentation
 - [ ] add a changelog
-- [ ] developer documentation
 - [ ] blanket test coverage
-- [ ] make sure all globals/environment is a parameter or optional parameter (such as `process.cwd()`)
-- [ ] function that emulates node-config module more closely with `NODE_ENV` file loading
 - [ ] allow to configure resolving imports
 - [ ] mechanism to replace keys instead of merging?
 - [ ] support synchronous and async loading?

@@ -1,5 +1,11 @@
 import * as index from "../index";
-import {loadWithParameters, testLoader} from "../index";
+import {
+    jsLoader,
+    load,
+    loadWithParameters,
+    testLoader,
+    yamlLoader,
+} from "../index";
 import {loadEnv} from "../index";
 
 describe("entry point", function () {
@@ -72,6 +78,12 @@ describe("loadEnv()", function () {
             .toThrowError("No matching configurations found for environment boobs")
         ;
     });
+
+    it("should load a config file", () => {
+        const res = loadEnv("default") as any;
+
+        expect(res.foo).toEqual("bar")
+    });
 });
 
 test("loadWithParameters() should apply parameters from the environment", () => {
@@ -113,4 +125,37 @@ test("loadWithParameters() should apply parameters from the config and environme
     );
 
     expect(res.database).toEqual("mysql://user:pass@host:3306");
+});
+
+test("load()", () => {
+    const res = load(
+        "example.yaml",
+        () => ({
+            data: {},
+            resolved: "example.yaml",
+        }),
+    );
+
+    expect(res).toEqual({});
+});
+
+test("yamlLoader() with context", () => {
+    const res = yamlLoader("./config/default.yaml", ".");
+
+    expect(res.data.foo).toEqual("bar");
+    expect(res.resolved).toMatch(/config\/default.yaml$/);
+});
+
+test("jsLoader() with context", () => {
+    const res = jsLoader("./config/test.json", ".");
+
+    expect(res.data.foo).toEqual("bar");
+    expect(res.resolved).toMatch(/config\/test.json$/);
+});
+
+test("jsLoader() without context", () => {
+    const res = jsLoader("./config/test.json");
+
+    expect(res.data.foo).toEqual("bar");
+    expect(res.resolved).toMatch(/config\/test.json$/);
 });

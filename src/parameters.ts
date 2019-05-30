@@ -1,4 +1,4 @@
-import {has, map} from "ramda";
+import {isNil, map} from "ramda";
 
 export function recursiveMap(fn: (x: any) => any): any {
     function r(x: any): any {
@@ -15,10 +15,10 @@ export const applyParameter = (params: Record<any, string>) => (x: any) => typeo
     ? x.replace(
         /%([^%]+)%/g,
         (_, match) => {
-            if (has(match, params)) {
-                return params[match];
-            } else {
+            if (isNil(params[match])) {
                 throw new Error(`Missing parameter '${match} found in config`);
+            } else {
+                return params[match];
             }
         },
     )

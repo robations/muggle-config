@@ -1,4 +1,5 @@
 database: "mysql://%USER%:%PASS%@%HOST%:%PORT%"
+foo: bar
 
 parameters:
     USER: ~

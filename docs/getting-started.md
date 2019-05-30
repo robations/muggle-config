@@ -19,13 +19,79 @@ const myConfig = load("./data.yaml");
 const someValue = myConfig.foo; // "bar"
 ```
 
-The returned configuration object is an instance of an [Immutable](https://facebook.github.io/immutable-js/) Map which
-provides a flexible interface for querying objects and object paths. If you'd rather work with plain old Javascript
-objects, just call `.toJS()` on the returned value.
+---
+
+**Intent:** I want to load sensitive or volatile parts of my configuration as
+*separate parameters
+
+```yaml
+# /etc/myapp/default.yaml
+parameters:
+    HOST: localhost
+    PORT: 3306
+    USERNAME: ~
+    PASSWORD: ~
+
+database_conn: "mysql://%USERNAME%:%PASSWORD%@%HOST%:%PORT%"
+```
+
+```ecmascript6
+// index.js
+import {loadWithParameters} from "muggle-config";
+
+const myConfig = loadWithParameters("/etc/myapp/default.yaml", process.env);
+
+// string values will be taken from parameters object or environment variable
+// e.g. "mysql://mydb:secret%20password@localhost:3306"
+const pass = myConfig.database_conn;
+```
+
+Parameters can either be loaded from a key within the config called `parameters`
+(if nothing else, this can be a place to define required parameters) or
+from a separate source such as environment variables. Parameters are passed
+in explicitly so you have the choice of loading this from (say) the environment,
+another config file, or some kind of secure parameter store.
+
+Missing, null, or undefined parameters will throw an error.
+
+There is no attempt to de-serialize parameter values so parameters are always
+strings.
+
 
 ---
 
-**Intent:** I want to load configuration depending on the current node environment variable
+**Intent:** I want to evaluate configuration files only once in my project.
+
+```ecmascript6
+// config.js
+import {loadEnv} from "muggle-config";
+
+// Any more complicated configuration logic could go in here, such as schema
+// validation or setting defaults.
+
+export const config = loadEnv();
+
+
+// another.js
+import {config} from "./config";
+
+console.log(config.foo);
+```
+
+Create a module within your project, say `config.js`, which evaluates and
+exports your configuration for use elsewhere. Since NodeJS/CommonJS only
+evaluates a module once you can be sure you’ll get the same configuration each
+time.
+
+---
+
+**Intent:** I want to load configuration depending on the current node
+*environment variable
+
+Note that the `loadEnv()` function is now DEPRECATED. You may do better by using
+either `load()` or `loadWithParameters()` and specifying the config path
+explicitly. Less magic is generally good, and some modules make wild assumptions
+about behavior based on `NODE_ENV` (React and others).
  
 ```yaml
 # ./config/default.yaml
@@ -65,25 +131,3 @@ i'm in development!
 The `_imports` key in the YAML files above indicates configurations that must be loaded before the current file can be
 resolved. With a custom loader you could load from any source, although note that we are currently limited to
 synchronous operations.
-
----
-
-**Intent:** I want to avoid re-evaluating configuration files and consolidate config logic in my project
-
-```ecmascript6
-// config.js
-import {loadEnv} from "muggle-config";
-
-// any more complicated configuration logic could go in here such as validation or setting defaults
-export const config = loadEnv();
-
-
-// another.js
-import {config} from "./config";
-
-console.log(config.foo);
-```
-
-Create a module within your project, say `config.js`, which evaluates and exports your configuration for use elsewhere.
-Since NodeJS/CommonJS only evaluates a module once you can be sure you‘ll get the same configuration each time,
-and the ImmutableJS data structure ensures that nothing can change the configuration during runtime.

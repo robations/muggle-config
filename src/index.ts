@@ -73,7 +73,7 @@ export function load<C extends {}>(
  */
 export function loadWithParameters<C extends {}>(
     resource: string,
-    env: Record<any, string>,
+    env: Record<any, string> = {},
     loader: Loader<string, string> = extensionLoader,
     context?: string,
 ): C {
@@ -89,6 +89,13 @@ export function loadWithParameters<C extends {}>(
  * @param env The environment to load. Will fall back to the NODE_ENV environment variable.
  * @param loader Loads a resource.
  * @param context A context for loading resources such as current working directory
+ *
+ * @deprecated This function contains or implies some "magic", which is not the
+ * Muggle way to do things. Suggest to use load() or loadWithParameters()
+ * instead and explicitly specify the path to the configuration file. If you
+ * feel the need to switch based on the `env` parameter I suggest to use a
+ * configuration parameter instead. No plans to remove this function in the
+ * immediate future.
  */
 export function loadEnv<C extends {}>(env?: string, loader: Loader<string, string> = extensionLoader, context?: string): C {
     if (env === undefined) {
@@ -99,6 +106,7 @@ export function loadEnv<C extends {}>(env?: string, loader: Loader<string, strin
     }
     let configDir = join(process.cwd(), "config");
     if (configDir.indexOf(".") === 0) {
+        // TODO how/why do we trigger this case?
         configDir = join(process.cwd(), configDir);
     }
     const extensions = ["js", "json", "yaml", "yml"];
@@ -138,7 +146,7 @@ export function yamlLoader(resource: string, context?: string) {
 
     return {
         data: yaml.safeLoad(fs.readFileSync(resolved, "utf8")),
-        resolved: resolved,
+        resolved,
     };
 }
 

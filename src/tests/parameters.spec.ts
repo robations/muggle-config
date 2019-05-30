@@ -37,8 +37,10 @@ test("applyParameter() should replace multiple params", () => {
     expect(res).toEqual("mysql://user@pass:localhost:3346");
 });
 
-test("applyParameter() should throw an error if param is missing", () => {
+test("applyParameter() should throw an error if param is missing, null or undefined", () => {
     expect(() => applyParameter({HoSt: "localhost", PORT: "3306"})("mysql://user@pass:%HOST%:%PORT%")).toThrow();
+    expect(() => applyParameter({HOST: "localhost", PORT: null})("mysql://user@pass:%HOST%:%PORT%")).toThrow();
+    expect(() => applyParameter({HOST: "localhost", PORT: undefined})("mysql://user@pass:%HOST%:%PORT%")).toThrow();
 });
 
 test("recursiveMap() should combine with applyParameter() nicely", () => {
