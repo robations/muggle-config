@@ -19,6 +19,12 @@ test("recursiveMap() should apply fn to object values", () => {
     expect(res.three).toEqual("hi");
 });
 
+test("recursiveMap() should not try to recurse into null property", () => {
+    const res = recursiveMap(() => "hi")({one: null});
+
+    expect(res.one).toEqual("hi");
+});
+
 test("applyParameter() should replace matched %PARAMS%", () => {
     const res = applyParameter({PASSWORD: "the secret is here"})("This is the '%PASSWORD%'.");
 

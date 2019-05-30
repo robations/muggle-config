@@ -2,7 +2,7 @@ import {has, map} from "ramda";
 
 export function recursiveMap(fn: (x: any) => any): any {
     function r(x: any): any {
-        return typeof x === "object"
+        return typeof x === "object" && x !== null
             ? map(r, x)
             : fn(x)
         ;
