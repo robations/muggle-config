@@ -1,6 +1,6 @@
 # Muggle Config
 
-Configuration without the magic.
+Configuration without the magic 🚫🧙‍♀️
 
 [![NPM](https://nodei.co/npm/muggle-config.png?downloads=true)](https://nodei.co/npm/muggle-config/)
 
@@ -9,14 +9,12 @@ Configuration without the magic.
 
 ## Why
 
-Designed as a drop in replacement* for the doughty node-config module. Node-config fits lots of use cases, but I often
-find it becomes hard to use when I have a more complex requirement, such as multiple config inheritance. In my opinion
-it tries to do too much work automatically by taking instructions from the environment and by trying to be a singleton.
-This project aims to be both simpler to understand and more configurable, which is handy for a module handling
-configuration.
-
-<small>\* This is a lie, it differs in many significant ways. However it has enough similarities to make replacing
-existing usages within the bounds of feasibility.</small>
+Originally designed as a replacement for
+[config](https://www.npmjs.com/package/config). The config module fits many use
+cases, but lacks some flexibility in loading configuration. In my opinion it is
+too magical by taking instructions from the `NODE_ENV` variable and by trying to
+be a singleton. This project aims to be simpler to understand and more
+configurable, which is handy for a module handling configuration.
 
 
 ## How
@@ -84,8 +82,7 @@ const myConfig = load("graham.ini", iniLoader);
 # Who
 
 Contribute by trying out this module and reporting back any usability problems, questions or bugs on [the issue
-tracker]([![Build
-Status](https://travis-ci.org/robations/muggle-config.svg?branch=master)](https://travis-ci.org/robations/muggle-config)).
+tracker](https://github.com/robations/muggle-config/issues).
 Pull requests are welcome but please check before doing work to avoid disappointment.
 
 
