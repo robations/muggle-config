@@ -36,7 +36,7 @@
     "prepublish": "yarn build",
     "precommit": "yarn lint ; (yarn in-rebase && lint-staged)",
     "prepush": "CI=1 yarn test",
-    "test": "yarn jest"
+    "test": "yarn lint && yarn jest"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
