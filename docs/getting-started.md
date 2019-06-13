@@ -22,7 +22,7 @@ const someValue = myConfig.foo; // "bar"
 ---
 
 **Intent:** I want to load sensitive or volatile parts of my configuration as
-*separate parameters
+separate parameters
 
 ```yaml
 # /etc/myapp/default.yaml
@@ -126,9 +126,9 @@ i'm in development!
 ```
 
 **Explanation:** Like with the [config]() module, `loadEnv()` determines the
-*environment name from `process.env.NODE_ENV` and looks for a corresponding file
-*in the `config/` directory. `loadEnv()` will search for a file with the
-*extension **.js**, **.json**, *.yaml** and **.yml**, in that order.
+environment name from `process.env.NODE_ENV` and looks for a corresponding file
+in the `config/` directory. `loadEnv()` will search for a file with the
+extension **.js**, **.json**, *.yaml** and **.yml**, in that order.
 
 The `_imports` key in the YAML files above indicates configurations that must be
 loaded before the current file can be resolved. With a custom loader you could
