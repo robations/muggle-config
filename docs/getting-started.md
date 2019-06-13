@@ -86,12 +86,13 @@ time.
 ---
 
 **Intent:** I want to load configuration depending on the current node
-*environment variable
+environment variable
 
-Note that the `loadEnv()` function is now DEPRECATED. You may do better by using
-either `load()` or `loadWithParameters()` and specifying the config path
-explicitly. Less magic is generally good, and some modules make wild assumptions
-about behavior based on `NODE_ENV` (React and others).
+Note that the `loadEnv()` function is now DEPRECATED. Although there is no
+immediate plan to remove this function you may do better by using either
+`load()` or `loadWithParameters()` and specifying the config path explicitly.
+Less magic is generally better, and some modules make wild assumptions about
+behavior based on `NODE_ENV` (React and others).
  
 ```yaml
 # ./config/default.yaml
@@ -124,10 +125,12 @@ $ NODE_ENV=dev node index.js
 i'm in development!
 ```
 
-**Explanation:** Like with the [config]() module, `loadEnv()` determines the environment name from
-*`process.env.NODE_ENV` and looks for a corresponding file in the `config/` directory. `loadEnv()` will search for a
-*file with the extension **.js**, **.json**, *.yaml** and **.yml**, in that order.
+**Explanation:** Like with the [config]() module, `loadEnv()` determines the
+*environment name from `process.env.NODE_ENV` and looks for a corresponding file
+*in the `config/` directory. `loadEnv()` will search for a file with the
+*extension **.js**, **.json**, *.yaml** and **.yml**, in that order.
 
-The `_imports` key in the YAML files above indicates configurations that must be loaded before the current file can be
-resolved. With a custom loader you could load from any source, although note that we are currently limited to
-synchronous operations.
+The `_imports` key in the YAML files above indicates configurations that must be
+loaded before the current file can be resolved. With a custom loader you could
+load from any source, although note that we are currently limited to synchronous
+operations.
