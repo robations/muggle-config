@@ -1,8 +1,8 @@
 import * as yaml from "js-yaml";
 import * as fs from "fs";
-import {dirname, resolve} from "path";
-import {extname} from "path";
-import {join} from "path";
+import { dirname, resolve } from "path";
+import { extname } from "path";
+import { join } from "path";
 import {
     has,
     mergeDeepLeft,
@@ -12,7 +12,7 @@ import {
     prop,
     reduce,
 } from "ramda";
-import {applyParameters} from "./parameters";
+import { applyParameters } from "./parameters";
 
 export interface Loaded<R, C> {
     data: {};
@@ -26,19 +26,20 @@ export interface Loader<R, C> {
     (resource: R, context?: C): Loaded<R, C>;
 }
 
-export function genericLoad<R, C>(resource: R, loader: Loader<R, C>, context?: C): any {
-    const {data, resolved} = loader(resource, context);
+export function genericLoad<R, C>(
+    resource: R,
+    loader: Loader<R, C>,
+    context?: C,
+): any {
+    const { data, resolved } = loader(resource, context);
 
     if (has("_imports", data)) {
         return pipe(
             prop("_imports"),
-            reduce(
-                (agg: any, x: R) => {
-                    const base = genericLoad<R, C>(x, loader, resolved);
-                    return mergeDeepRight(agg, base);
-                },
-                {},
-            ),
+            reduce((agg: any, x: R) => {
+                const base = genericLoad<R, C>(x, loader, resolved);
+                return mergeDeepRight(agg, base);
+            }, {}),
             mergeDeepLeft(data),
         )(data);
     }
@@ -97,12 +98,18 @@ export function loadWithParameters<C extends {}>(
  * configuration parameter instead. No plans to remove this function in the
  * immediate future.
  */
-export function loadEnv<C extends {}>(env?: string, loader: Loader<string, string> = extensionLoader, context?: string): C {
+export function loadEnv<C extends {}>(
+    env?: string,
+    loader: Loader<string, string> = extensionLoader,
+    context?: string,
+): C {
     if (env === undefined) {
         env = process.env.NODE_ENV;
     }
     if (env === undefined) {
-        throw new Error("NODE_ENV variable must be set when using loadEnv() or specify environment explicitly");
+        throw new Error(
+            "NODE_ENV variable must be set when using loadEnv() or specify environment explicitly",
+        );
     }
     let configDir = join(process.cwd(), "config");
     if (configDir.indexOf(".") === 0) {
@@ -113,11 +120,12 @@ export function loadEnv<C extends {}>(env?: string, loader: Loader<string, strin
 
     const found = extensions
         .map((x: string) => join(configDir, env) + "." + x)
-        .find((x: string) => fs.existsSync(x))
-    ;
+        .find((x: string) => fs.existsSync(x));
 
     if (found === undefined) {
-        throw new Error(`No matching configurations found for environment ${env}`);
+        throw new Error(
+            `No matching configurations found for environment ${env}`,
+        );
     }
 
     return load(found, loader, context);
@@ -127,11 +135,11 @@ export function loadEnv<C extends {}>(env?: string, loader: Loader<string, strin
  * Loads resources based on file extension.
  */
 export function extensionLoader(resource: string, context?: string) {
-    const types: {[key: string]: Loader<string, string>} = {
+    const types: { [key: string]: Loader<string, string> } = {
         ".yaml": yamlLoader,
         ".yml": yamlLoader,
         ".js": jsLoader,
-        ".json": jsLoader
+        ".json": jsLoader,
     };
     const ext = extname(resource).toLocaleLowerCase();
 
@@ -139,10 +147,7 @@ export function extensionLoader(resource: string, context?: string) {
 }
 
 export function yamlLoader(resource: string, context?: string) {
-    const resolved = context
-        ? resolve(dirname(context), resource)
-        : resource
-    ;
+    const resolved = context ? resolve(dirname(context), resource) : resource;
 
     return {
         data: yaml.safeLoad(fs.readFileSync(resolved, "utf8")),
@@ -153,8 +158,7 @@ export function yamlLoader(resource: string, context?: string) {
 export function jsLoader(resource: string, context?: string) {
     const resolved = context
         ? resolve(process.cwd(), dirname(context), resource)
-        : resolve(resource)
-    ;
+        : resolve(resource);
 
     return {
         data: require(resolved),
