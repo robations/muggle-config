@@ -11,10 +11,9 @@ Configuration without the magic 🚫🧙‍♀️
 
 Originally designed as a replacement for
 [config](https://www.npmjs.com/package/config). The config module fits many use
-cases, but lacks some flexibility in loading configuration. In my opinion it is
-too magical by taking instructions from the `NODE_ENV` variable and by trying to
-be a singleton. This project aims to be simpler to understand and more
-configurable, which is handy for a module handling configuration.
+cases, but lacks some flexibility in loading configuration. This project aims
+to be simpler to understand and more configurable, which is handy for a module
+handling configuration.
 
 
 ## How
@@ -47,11 +46,12 @@ _imports:
 foo: buzz
 ```
 
-Using the default configuration loader, the filetype will be detected from the file extension. The currently supported
-filetypes are YAML (`.yaml`, `.yml`), CommonJS Javascript (`.js`) and JSON (`.json`).
+Using the default configuration loader, the filetype will be detected from the
+file extension. The currently supported filetypes are YAML (`.yaml`, `.yml`),
+CommonJS Javascript (`.js`) and JSON (`.json`).
 
-You can also create your own configuration loader that must match the `Loader` interface. Here’s an example for loading
-ini files:
+You can also create your own configuration loader that must match the `Loader`
+interface. Here’s an example for loading ini files:
 
 ```typescript
 import {readFileSync} from "fs";
@@ -79,11 +79,16 @@ function iniLoader(resource: string, context?: string) {
 const myConfig = load("graham.ini", iniLoader);
 ```
 
+You can also merge in sensitive configuration parameters from another source
+using the `loadWithParameters()` function. See the [getting
+started](docs/getting-started.md) guide for this and more examples.
+
 # Who
 
-Contribute by trying out this module and reporting back any usability problems, questions or bugs on [the issue
-tracker](https://github.com/robations/muggle-config/issues).
-Pull requests are welcome but please check before doing work to avoid disappointment.
+Contribute by trying out this module and reporting back any usability problems,
+questions or bugs on [the issue
+tracker](https://github.com/robations/muggle-config/issues). Pull requests are
+welcome but please check before doing work to avoid disappointment.
 
 
 # Upgrading from v0.0.x to v1
@@ -96,19 +101,3 @@ Plain Old Javascript Objects.
 
 3. `muggle-config` now has a dependency on some `ramda` functions. Make sure
 that tree-shaking is working if using in the browser.
-
-
-## TODO
-
-- [x] file extension loader (load files based on extension)
-- [x] document basic usage
-- [x] add some unit tests
-- [x] ensure minimal npm publish (don't include bloat files)
-- [x] set up continuous integration
-- [x] clearer documentation of common use cases
-- [x] developer documentation
-- [ ] add a changelog
-- [ ] blanket test coverage
-- [ ] allow to configure resolving imports
-- [ ] mechanism to replace keys instead of merging?
-- [ ] support synchronous and async loading?
