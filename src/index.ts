@@ -1,8 +1,6 @@
 import * as yaml from "js-yaml";
 import * as fs from "fs";
-import { dirname, resolve } from "path";
-import { extname } from "path";
-import { join } from "path";
+import { dirname, extname, join, resolve } from "path";
 import {
     has,
     mergeDeepLeft,
