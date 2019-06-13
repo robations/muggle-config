@@ -22,14 +22,27 @@
     "@types/jest": "^24.0.13",
     "@types/js-yaml": "^3.5.29",
     "@types/node": "^6.0.52",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.1.2",
     "jest": "^24.8.0",
+    "prettier": "^1.12.1",
     "ts-jest": "^24.0.2",
     "typescript": "^3.4"
   },
   "scripts": {
     "build": "yarn tsc",
+    "in-rebase": "(! test -d '$(git rev-parse --git-path rebase-merge)' && ! test -d '$(git rev-parse --git-path rebase-apply)')",
+    "lint": "yarn tsc --noEmit",
     "prepublish": "yarn build",
+    "precommit": "yarn lint ; (yarn in-rebase && lint-staged)",
+    "prepush": "CI=1 yarn test",
     "test": "yarn jest"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "types": "./dist/index.d.ts",
   "jest": {
