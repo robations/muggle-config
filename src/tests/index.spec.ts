@@ -2,17 +2,20 @@ import * as index from "../index";
 import {
     jsLoader,
     load,
+    loadEnv,
     loadWithParameters,
+    loadWithSafeParameters,
     testLoader,
     yamlLoader,
 } from "../index";
-import { loadEnv } from "../index";
 
 describe("entry point", function() {
     it("should have the expected exports", function() {
         expect(typeof index.genericLoad).toEqual("function");
         expect(typeof index.load).toEqual("function");
         expect(typeof index.loadEnv).toEqual("function");
+        expect(typeof index.loadWithParameters).toEqual("function");
+        expect(typeof index.loadWithSafeParameters).toEqual("function");
 
         expect(typeof index.extensionLoader).toEqual("function");
         expect(typeof index.yamlLoader).toEqual("function");
@@ -122,6 +125,30 @@ test("loadWithParameters() should apply parameters from the config and environme
     );
 
     expect(res.database).toEqual("mysql://user:pass@host:3306");
+});
+
+test("loadWithSafeParameters() should merge external parameters within the config object", () => {
+    const res: any = loadWithSafeParameters(
+        "example.yaml",
+        {
+            PORT: "3306",
+            ILLEGAL_ALIEN: "hello",
+        },
+        () => ({
+            data: {
+                database: "port=%PORT%",
+                parameters: {
+                    HOST: "host",
+                    PORT: "port",
+                },
+            },
+            resolved: "example.yaml",
+        }),
+    );
+
+    expect(res.database).toEqual("port=3306");
+    expect(res.parameters.PORT).toEqual("3306");
+    expect(res.parameters.ILLEGAL_ALIEN).not.toBeDefined();
 });
 
 test("load()", () => {

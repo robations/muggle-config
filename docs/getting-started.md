@@ -35,11 +35,11 @@ parameters:
 database_conn: "mysql://%USERNAME%:%PASSWORD%@%HOST%:%PORT%"
 ```
 
-```ecmascript6
+```ecmascript 6
 // index.js
-import {loadWithParameters} from "muggle-config";
+import {loadWithSafeParameters} from "muggle-config";
 
-const myConfig = loadWithParameters("/etc/myapp/default.yaml", process.env);
+const myConfig = loadWithSafeParameters("/etc/myapp/default.yaml", process.env);
 
 // string values will be taken from parameters object or environment variable
 // e.g. "mysql://mydb:secret%20password@localhost:3306"
@@ -53,6 +53,10 @@ in explicitly so you have the choice of loading this from (say) the environment,
 another config file, or some kind of secure parameter store.
 
 Missing, null, or undefined parameters will throw an error.
+
+Parameters from the environment will be merged into the resulting config object
+under the `parameters` key. Only parameters that already exist will be merged,
+to avoid your config being polluted by everything in your environment.
 
 There is no attempt to de-serialize parameter values so parameters are always
 strings.

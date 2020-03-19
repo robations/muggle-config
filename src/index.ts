@@ -3,9 +3,11 @@ import * as fs from "fs";
 import { dirname, extname, join, resolve } from "path";
 import {
     has,
+    keys,
     mergeDeepLeft,
     mergeDeepRight,
-    merge,
+    mergeRight,
+    pick,
     pipe,
     prop,
     reduce,
@@ -56,8 +58,8 @@ export function load<C extends {}>(
  * Load config from the specified resource and apply the passed environment
  * variables.
  *
- * The order of applying parameters is (i) from a `parameters` key within the
- * config, then (ii) from the passed `env` record.
+ * The order of merging parameters is (i) from a `parameters` key within the
+ * config, then (ii) from the passed `env` record, where (ii) wins over (i).
  *
  * For example, you might call it like this:
  *
@@ -69,6 +71,7 @@ export function load<C extends {}>(
  * @param loader
  * @param env
  * @param context
+ * @deprecated Consider using loadWithSafeParameters instead.
  */
 export function loadWithParameters<C extends {}>(
     resource: string,
@@ -77,9 +80,50 @@ export function loadWithParameters<C extends {}>(
     context?: string,
 ): C {
     const config = genericLoad<string, string>(resource, loader, context);
-    const params = merge(config.parameters, env);
+    const params = mergeRight(config.parameters, env);
 
     return applyParameters(config, params);
+}
+
+/**
+ * Load config from the specified resource and apply the passed environment
+ * variables.
+ *
+ * Differences from `loadWithParameters()`:
+ *
+ * - External parameters will be merged into the config (at `config.parameters`)
+ * - Only the parameters specified in the config will be merged into the
+ * configuration.
+ *
+ * The order of merging parameters is (i) from a `parameters` key within the
+ * config, then (ii) from the passed `env` record, where (ii) wins over (i).
+ *
+ * For example, you might call it like this:
+ *
+ * ```
+ * const config = loadWithSafeParameters("config/myconfig.yaml", process.env);
+ * ```
+ *
+ * @param resource
+ * @param loader
+ * @param env
+ * @param context
+ */
+export function loadWithSafeParameters<
+    P extends Record<any, string>,
+    C extends { parameters?: P }
+>(
+    resource: string,
+    env: P,
+    loader: Loader<string, string> = extensionLoader,
+    context?: string,
+): C {
+    const config = genericLoad<string, string>(resource, loader, context) as C;
+    const config2 = mergeDeepRight(config, {
+        parameters: pick(keys(config.parameters ?? {}), env),
+    });
+
+    return applyParameters(config2, config2.parameters) as C;
 }
 
 /**
@@ -90,7 +134,7 @@ export function loadWithParameters<C extends {}>(
  * @param context A context for loading resources such as current working directory
  *
  * @deprecated This function contains or implies some "magic", which is not the
- * Muggle way to do things. Suggest to use load() or loadWithParameters()
+ * Muggle way to do things. Suggest to use load() or loadWithSafeParameters()
  * instead and explicitly specify the path to the configuration file. If you
  * feel the need to switch based on the `env` parameter I suggest to use a
  * configuration parameter instead. No plans to remove this function in the
