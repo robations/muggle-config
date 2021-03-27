@@ -1,4 +1,4 @@
-import * as index from "../index";
+import * as index from "./index";
 import {
     jsLoader,
     load,
@@ -7,10 +7,10 @@ import {
     loadWithSafeParameters,
     testLoader,
     yamlLoader,
-} from "../index";
+} from "./index";
 
-describe("entry point", function() {
-    it("should have the expected exports", function() {
+describe("entry point", function () {
+    it("should have the expected exports", function () {
         expect(typeof index.genericLoad).toEqual("function");
         expect(typeof index.load).toEqual("function");
         expect(typeof index.loadEnv).toEqual("function");
@@ -22,7 +22,7 @@ describe("entry point", function() {
         expect(typeof index.jsLoader).toEqual("function");
     });
 
-    it("should support importing nested config", function() {
+    it("should support importing nested config", function () {
         const config = {
             _imports: [
                 {
@@ -47,7 +47,7 @@ describe("entry point", function() {
         expect(result.heavySurf).toEqual("this should be loaded");
     });
 
-    it("should handle overriding values so that the last value wins", function() {
+    it("should handle overriding values so that the last value wins", function () {
         const config = {
             _imports: [{ key: "one", key2: "ay" }, { key2: "bee" }],
             key: "three",
@@ -60,20 +60,20 @@ describe("entry point", function() {
     });
 });
 
-describe("loadEnv()", function() {
+describe("loadEnv()", function () {
     const envTemp = process.env.NODE_ENV;
 
-    afterEach(function() {
+    afterEach(function () {
         process.env.NODE_ENV = envTemp;
     });
 
-    it("should throw an appropriate error if NODE_ENV is not set", function() {
+    it("should throw an appropriate error if NODE_ENV is not set", function () {
         delete process.env.NODE_ENV;
 
         expect(() => loadEnv()).toThrow();
     });
 
-    it("should try to load a file based on the passed env string (and fail)", function() {
+    it("should try to load a file based on the passed env string (and fail)", function () {
         expect(() => loadEnv("boobs")).toThrowError(
             "No matching configurations found for environment boobs",
         );
@@ -161,7 +161,7 @@ test("load()", () => {
 });
 
 test("yamlLoader() with context", () => {
-    const res = yamlLoader("./config/default.yaml", ".");
+    const res: any = yamlLoader("./config/default.yaml", ".");
 
     expect(res.data.foo).toEqual("bar");
     expect(res.resolved).toMatch(/config\/default.yaml$/);
