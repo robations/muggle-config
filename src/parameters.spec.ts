@@ -1,4 +1,4 @@
-import { applyParameter, applyParameters, recursiveMap } from "../parameters";
+import { applyParameter, applyParameters, recursiveMap } from "./parameters";
 
 test("recursiveMap() should apply fn to individual value", () => {
     const res = recursiveMap(() => "hi")("bye");
