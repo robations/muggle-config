@@ -33,7 +33,7 @@
     "build": "yarn tsc",
     "in-rebase": "(! test -d '$(git rev-parse --git-path rebase-merge)' && ! test -d '$(git rev-parse --git-path rebase-apply)')",
     "lint": "yarn tsc --noEmit",
-    "prepublish": "yarn build",
+    "prepublishOnly": "yarn build",
     "test": "yarn lint && yarn jest",
     "test-no-lint": "yarn jest"
   },
