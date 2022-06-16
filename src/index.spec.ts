@@ -182,14 +182,6 @@ test("jsLoader() without context", () => {
     expect(res.resolved).toMatch(/config\/test.json$/);
 });
 
-test("jsLoader() should preserve regexps", () => {
-    const res = jsLoader("./config/regexp.js");
-
-    expect(res.data.regexp).toBeInstanceOf(RegExp);
-    expect(res.data.foo.regexp).toBeInstanceOf(RegExp);
-    expect(res.resolved).toMatch(/config\/regexp.js$/);
-});
-
 test("load() should preserve regexps", () => {
     const res: any = load("./config/regexp.js");
 
