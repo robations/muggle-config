@@ -8,6 +8,7 @@ import {
     testLoader,
     yamlLoader,
 } from "./index";
+import { applyParameters } from "./parameters";
 
 describe("entry point", function () {
     it("should have the expected exports", function () {
@@ -179,4 +180,37 @@ test("jsLoader() without context", () => {
 
     expect(res.data.foo).toEqual("bar");
     expect(res.resolved).toMatch(/config\/test.json$/);
+});
+
+test("jsLoader() should preserve regexps", () => {
+    const res = jsLoader("./config/regexp.js");
+
+    expect(res.data.regexp).toBeInstanceOf(RegExp);
+    expect(res.data.foo.regexp).toBeInstanceOf(RegExp);
+    expect(res.resolved).toMatch(/config\/regexp.js$/);
+});
+
+test("load() should preserve regexps", () => {
+    const res: any = load("./config/regexp.js");
+
+    expect(res.regexp).toBeInstanceOf(RegExp);
+    expect(res.obj.regexp).toBeInstanceOf(RegExp);
+    expect(res.array[0]).toBeInstanceOf(RegExp);
+    expect(res.array[1].old).toBeInstanceOf(RegExp);
+});
+
+test("applyParameters() should preserve regexps", () => {
+    const r: any = load("./config/regexp.js");
+
+    expect(r.regexp).toBeInstanceOf(RegExp);
+    expect(r.obj.regexp).toBeInstanceOf(RegExp);
+    expect(r.array[0]).toBeInstanceOf(RegExp);
+    expect(r.array[1].old).toBeInstanceOf(RegExp);
+
+    const r2 = applyParameters(r, {});
+
+    expect(r2.regexp).toBeInstanceOf(RegExp);
+    expect(r2.obj.regexp).toBeInstanceOf(RegExp);
+    expect(r2.array[0]).toBeInstanceOf(RegExp);
+    expect(r2.array[1].old).toBeInstanceOf(RegExp);
 });

@@ -1,8 +1,13 @@
 import { isNil, map } from "ramda";
 
+export const isPlainObj = (value: unknown) =>
+    !!value && Object.getPrototypeOf(value) === Object.prototype;
+
 export function recursiveMap(fn: (x: any) => any): any {
     function r(x: any): any {
-        return typeof x === "object" && x !== null ? map(r, x) : fn(x);
+        return (Array.isArray(x) || isPlainObj(x)) && x !== null
+            ? map(r, x)
+            : fn(x);
     }
 
     return r;
