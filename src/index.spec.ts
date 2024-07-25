@@ -191,7 +191,7 @@ test("load() should preserve regexps", () => {
     expect(res.array[1].old).toBeInstanceOf(RegExp);
 });
 
-test("applyParameters() should preserve regexps", () => {
+test("applyParameters() should preserve regexps and dates", () => {
     const r: any = load("./config/regexp.js");
 
     expect(r.regexp).toBeInstanceOf(RegExp);
@@ -205,4 +205,24 @@ test("applyParameters() should preserve regexps", () => {
     expect(r2.obj.regexp).toBeInstanceOf(RegExp);
     expect(r2.array[0]).toBeInstanceOf(RegExp);
     expect(r2.array[1].old).toBeInstanceOf(RegExp);
+
+    expect(r2.date).toBeInstanceOf(Date);
+});
+
+test("applyParameters() should preserve regexps and dates when JS is loaded via YAML", () => {
+    const r: any = load("./config/importsJs.yaml");
+
+    expect(r.regexp).toBeInstanceOf(RegExp);
+    expect(r.obj.regexp).toBeInstanceOf(RegExp);
+    expect(r.array[0]).toBeInstanceOf(RegExp);
+    expect(r.array[1].old).toBeInstanceOf(RegExp);
+
+    const r2 = applyParameters(r, {});
+
+    expect(r2.regexp).toBeInstanceOf(RegExp);
+    expect(r2.obj.regexp).toBeInstanceOf(RegExp);
+    expect(r2.array[0]).toBeInstanceOf(RegExp);
+    expect(r2.array[1].old).toBeInstanceOf(RegExp);
+
+    expect(r2.date).toBeInstanceOf(Date);
 });

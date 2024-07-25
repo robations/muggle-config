@@ -18,7 +18,7 @@ export const applyParameter = (params: Record<any, string>) => (x: any) =>
         ? x.replace(/%([^%]+)%/g, (_, match) => {
               if (isNil(params[match])) {
                   throw new Error(
-                      `Missing parameter '${match} found in config`,
+                      `Missing parameter '${match}' found in config`,
                   );
               } else {
                   return params[match];

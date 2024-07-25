@@ -11,4 +11,6 @@ module.exports = {
             old: /friend/,
         },
     ],
+
+    date: new Date(Date.UTC(2003, 3, 4)),
 };
