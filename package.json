@@ -1,6 +1,6 @@
 {
   "name": "muggle-config",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "Configuration without the magic.",
   "main": "dist/index.js",
   "author": "me",
